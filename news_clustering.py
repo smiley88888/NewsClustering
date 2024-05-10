@@ -128,15 +128,15 @@ def generate_report(categories, probs, payloads, file_name):
 de700_records = fetch_all_vectors(qdrant_client, "DE 700")
 de700_vectors, de700_payloads = extracting(de700_records)
 de700_categories, de700_probs=clustering(de700_vectors)
-generate_report(de700_categories, de700_probs, de700_payloads, "DE 700.xlsx")
+generate_report(de700_categories, de700_probs, de700_payloads, "result/"+"DE 700.xlsx")
 
 de800_records = fetch_all_vectors(qdrant_client, "DE 800")
 de800_vectors, de800_payloads = extracting(de800_records)
 de800_categories, de800_probs=clustering(de800_vectors)
-generate_report(de800_categories, de800_probs, de800_payloads, "DE 800.xlsx")
+generate_report(de800_categories, de800_probs, de800_payloads, "result/"+"DE 800.xlsx")
 
 en4200_records = fetch_all_vectors(qdrant_client, "EN 4200")
 en4200_vectors, en4200_payloads = extracting(en4200_records)
 en4200_categories, en4200_probs=clustering(en4200_vectors)
-generate_report(en4200_categories, en4200_probs, en4200_payloads, "EN 4200.xlsx")
+generate_report(en4200_categories, en4200_probs, en4200_payloads, "result/"+"EN 4200.xlsx")
 
