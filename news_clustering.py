@@ -15,14 +15,16 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Qdrant
 # from newsapi import NewsApiClient
 from qdrant_client import QdrantClient
+import logging
+from config import config
 
-from dotenv import load_dotenv
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s: %(message)s', datefmt='%Y-%m-%d %I:%M:%S', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
-load_dotenv()
 
 
-qdrant_url="https://ec9d4088-4356-4871-82d3-ec182c2a9187.us-east4-0.gcp.cloud.qdrant.io:6333"
-qdrant_api_key="l38XCLdqnaJ2q9VAe2bI_XZXIsp3QWXpRV6gUcd95SufCmi6I7QHCg"
+qdrant_url=config(["QDRANT_URL"])
+qdrant_api_key=config(["QDRANT_API_KEY"])
 
 # embeddings = OpenAIEmbeddings()
 embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-base")

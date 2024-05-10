@@ -1,4 +1,4 @@
 myenv
-.env
+.env.local
 git_repos.bat
 *.rar
