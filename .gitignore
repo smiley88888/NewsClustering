@@ -1,4 +1,11 @@
 myenv
+__pycache__
+result
+
 .env.local
 git_repos.bat
 *.rar
+
+data/~$Data for clustering (EverGrowing).xlsx
+test.py
+
