@@ -23,34 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 
-qdrant_url=config(["QDRANT_URL"])
-qdrant_api_key=config(["QDRANT_API_KEY"])
+qdrant_url=config["QDRANT_URL"]
+qdrant_api_key=config["QDRANT_API_KEY"]
 
-# embeddings = OpenAIEmbeddings()
-embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-base")
-
-
-def uploadQdrant():
-    file_path = "data/data for clustering.xlsx"
-    df1 = pd.read_excel(file_path, sheet_name='EN 4200')
-    df2 = pd.read_excel(file_path, sheet_name='DE 800')
-    df3 = pd.read_excel(file_path, sheet_name='DE 700') 
-
-    docs1 = df1.iloc[:, 0].tolist()
-    docs2 = df2.iloc[:, 0].tolist()
-    docs3 = df3.iloc[:, 0].tolist()
-
-    doc_store1 = Qdrant.from_texts(texts=docs1, embedding=embeddings, url=qdrant_url, api_key=qdrant_api_key, collection_name="EN 4200", timeout=1000)
-    print(doc_store1)
-
-    doc_store2 = Qdrant.from_texts(texts=docs2, embedding=embeddings, url=qdrant_url, api_key=qdrant_api_key, collection_name="DE 800", timeout=1000)
-    print(doc_store2)
-
-    doc_store3 = Qdrant.from_texts(texts=docs3, embedding=embeddings, url=qdrant_url, api_key=qdrant_api_key, collection_name="DE 700", timeout=1000)
-    print(doc_store3)
-
-
-# uploadQdrant()
 
 qdrant_client = QdrantClient(
     url=qdrant_url, 
@@ -86,10 +61,10 @@ def extracting(records):
     return vectors, payloads
 
 
-def clustering(vectors):
+def clustering(vectors, _min_cluster_size=2):
     clusterer = hdbscan.HDBSCAN(algorithm='best', alpha=1.0, approx_min_span_tree=True,
         gen_min_span_tree=False, leaf_size=40, cluster_selection_method='leaf', prediction_data=True,
-        metric='euclidean', min_cluster_size=2, min_samples=None, p=None)
+        metric='euclidean', min_cluster_size=_min_cluster_size, min_samples=None, p=None)
 
     clusterer.fit(vectors)
     print(clusterer.labels_)
@@ -106,7 +81,7 @@ def clustering(vectors):
         category_index[index] = max_index
         category_prob[index] = np.max(probs)
     # print(categories)
-    return category_index, category_prob
+    return clusterer.labels_.max(), category_index, category_prob
 
 
 def generate_report(categories, probs, payloads, file_name):
@@ -127,18 +102,22 @@ def generate_report(categories, probs, payloads, file_name):
         df.to_excel(writer, sheet_name=f"{index}")
     writer.close()
 
-de700_records = fetch_all_vectors(qdrant_client, "DE 700")
-de700_vectors, de700_payloads = extracting(de700_records)
-de700_categories, de700_probs=clustering(de700_vectors)
-generate_report(de700_categories, de700_probs, de700_payloads, "result/"+"DE 700.xlsx")
 
-de800_records = fetch_all_vectors(qdrant_client, "DE 800")
-de800_vectors, de800_payloads = extracting(de800_records)
-de800_categories, de800_probs=clustering(de800_vectors)
-generate_report(de800_categories, de800_probs, de800_payloads, "result/"+"DE 800.xlsx")
-
-en4200_records = fetch_all_vectors(qdrant_client, "EN 4200")
-en4200_vectors, en4200_payloads = extracting(en4200_records)
-en4200_categories, en4200_probs=clustering(en4200_vectors)
-generate_report(en4200_categories, en4200_probs, en4200_payloads, "result/"+"EN 4200.xlsx")
+if __name__ == "__main__":
+    # collection_names = ["DE 700", "DE 800", "EN 4200"]
+    collection_names = ["DE indo", "DE rf", "DE et", "EN outsider"]
+    for collection_name in collection_names:
+        records = fetch_all_vectors(qdrant_client, collection_name)
+        vectors, payloads = extracting(records)
+        sz = 2
+        while True:
+            category_size, categories, probs=clustering(vectors, _min_cluster_size=sz)
+            if category_size < 20 and category_size > 10:
+                break
+            elif category_size < 10: 
+                sz = sz - 1
+                category_size, categories, probs=clustering(vectors, _min_cluster_size=sz)
+                break
+            sz = sz + 1
+        generate_report(categories, probs, payloads, "result/"+f"{collection_name}_{category_size}.xlsx")
 
