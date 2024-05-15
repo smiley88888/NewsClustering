@@ -7,58 +7,15 @@ import seaborn as sns
 import numpy as np
 import hdbscan
 import pandas as pd
-
-from langchain.chains import LLMChain
-# from langchain_community.embeddings import OpenAIEmbeddings
-from langchain.embeddings import HuggingFaceEmbeddings
-
-from langchain_community.vectorstores import Qdrant
-# from newsapi import NewsApiClient
-from qdrant_client import QdrantClient
 import logging
 from config import config
+from downloadQdrant import fetch_all_vectors, extracting
+from config import config
+from qdrant_client import QdrantClient
+
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s: %(message)s', datefmt='%Y-%m-%d %I:%M:%S', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
-
-
-qdrant_url=config["QDRANT_URL"]
-qdrant_api_key=config["QDRANT_API_KEY"]
-
-
-qdrant_client = QdrantClient(
-    url=qdrant_url, 
-    api_key=qdrant_api_key,
-)
-
-def fetch_all_vectors(_qdrant_client, _collection_name):
-    response = _qdrant_client.count(
-        collection_name=_collection_name,
-    )
-    count = response.count
-
-    records = []
-    response = _qdrant_client.scroll(
-        collection_name=_collection_name,
-        limit=count,
-        with_payload=True,
-        with_vectors=True,
-    )
-    # if len(response[0]) == 0:
-    #     break
-    records.extend(response[0])
-    return records
-
-
-def extracting(records):
-    vectors = []
-    payloads = []
-    for record in records:
-        vectors.append(np.asarray(record.vector))
-        payloads.append(record.payload['page_content'])
-    vectors = np.asarray(vectors)
-    return vectors, payloads
 
 
 def clustering(vectors, _min_cluster_size=2):
@@ -67,9 +24,9 @@ def clustering(vectors, _min_cluster_size=2):
         metric='euclidean', min_cluster_size=_min_cluster_size, min_samples=None, p=None)
 
     clusterer.fit(vectors)
-    print(clusterer.labels_)
-    print(clusterer.probabilities_)
-    print(clusterer.labels_.max())
+    # print(clusterer.labels_)
+    # print(clusterer.probabilities_)
+    # print(clusterer.labels_.max())
 
     soft_clusters = hdbscan.all_points_membership_vectors(clusterer)
     # print(soft_clusters)
@@ -93,7 +50,7 @@ def generate_report(categories, probs, payloads, file_name):
         matching_probs = probs[matching_indices]
         sorted_indices_prob = np.argsort(matching_probs)[::-1].tolist()
         
-        print(index, matching_indices, matching_probs, sorted_indices_prob)
+        # print(index, matching_indices, matching_probs, sorted_indices_prob)
         matching_indices = [matching_indices[value] for value in sorted_indices_prob]
 
         payload = [payloads[value] for value in matching_indices]
@@ -104,6 +61,15 @@ def generate_report(categories, probs, payloads, file_name):
 
 
 if __name__ == "__main__":
+    qdrant_url=config["QDRANT_URL"]
+    qdrant_api_key=config["QDRANT_API_KEY"]
+
+
+    qdrant_client = QdrantClient(
+        url=qdrant_url, 
+        api_key=qdrant_api_key,
+    )
+
     # collection_names = ["DE 700", "DE 800", "EN 4200"]
     collection_names = ["DE indo", "DE rf", "DE et", "EN outsider"]
     for collection_name in collection_names:
