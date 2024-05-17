@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # qdrant_client = QdrantClient(
 #     url=qdrant_url, 
 #     api_key=qdrant_api_key,
+#     timeout=1000,
 # )
 
 

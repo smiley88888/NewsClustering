@@ -14,6 +14,7 @@ if __name__ == "__main__":
     qdrant_client = QdrantClient(
         url=qdrant_url, 
         api_key=qdrant_api_key,
+        timeout=1000,
     )
 
     collection_names = ["DE indo", "DE rf", "DE et", "EN outsider"]
