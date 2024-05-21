@@ -1,0 +1,68 @@
+Michael Fink
+  11:37 AM
+Hi Vitalii,
+great results, thanks so much!
+Quick questions:
+hierarchical clustering + Silhoette + hierarchical clustering -> it's first silhouette on the vectors, than hierarchical clustering based on the estimated number from silhouette, right? Same for Bunka?
+when looking at Silhouette, did you cap it at 80 for the x-axis?
+did you pre-process the titles with spacy? https://fouadroumieh.medium.com/topic-modeling-and-semantic-clustering-with-spacy-960dd4ac3c9a
+Results:
+a) indo: not usable, as Silhouette favored 2 clusters. We should implement a threshold, e.g. minimum 10 clusters. The 38 eg would have been the better choice, a threshold could solve this issue
+b) outsider:
+agglo:
+85/100 -> most items are reasonably sorted
+nevertheless, the question is how the tech will handle newly added topics? From my understanding, it's based on starting out with 1 cluster per item, then combining more and more items into clusters. Imo, hierarchical clustering isn't dynamically updatable in the way that some other clustering methods are (like online k-means, for example).
+bunkatopics
+in contrast to the hierarchical agglomeration, it's based on k-means? -> should be more flexible, let's just keep this in mind
+labels are basically unusable
+80/100 probably
+Happy to see that we're making tremendous progress and are close to getting it done! In the next/last step I'd love to see the same settings, but with
+spacy (or similar) pre-processing of the titles before vectorization
+silhouette threshold 10
+again for indo and outsider, hierarchical clustering as well as Bunka.
+-> effort for spacy 2h, as all other parts are already in place? Ready by tomorrow?
+-> as soon as we're at 90%, we can implement the tech into our existing infrastructure, but there are already the next qdrant projects in sight when it comes to our eCom integration in a couple of weeks (edited) 
+
+
+Michael Fink
+  15 hours ago
+Hi Vitalii,
+thanks for the quick reply!
+yes, k means produces different results. See here: „The main one is that since the initialization of the centroids is random, it can give different results on the same dataset. To avoid this inconsistency, by default, it is run 10 times and it selects the best performance among these 10 (you can regulate this number using hyperparameters).“ from https://www.analyticsvidhya.com/blog/2021/05/k-mean-getting-the-optimal-number-of-clusters/#:~:text=Using%20Silhouette%20Score%3A,the%20highest%20average%20silhouette%20score. or here via mean https://medium.com/nerd-for-tech/k-means-algorithm-in-4-parts-7540d0f33339
+-> please check this approach with min=3 and max=100
+-> would love to see the estimated clusters based on silhouette
+nevertheless, I‘d love to see the number of clusters by hierarchical clustering (your current approach?) as well for the preprocessed data
+Spacy: please use the EN and DE library for the according tokenisation, removing stop words/punctuation, etc, see https://spacy.io/usage/spacy-101
+-> please review the preprocessed results and share some before vectorising so that we can be sure that the preprocessing via spacy adds some value
+
+
+Michael Fink
+  15 hours ago
+Example, GPT4 based: If you preprocess the title "Madden 22 Ultimate Team: Raiders Theme Team" using the approach I outlined (tokenizing, removing stopwords and punctuation, and extracting lemmas), and assuming English language processing with spaCy, you might end up with something like this:
+
+**Original title**: "Madden 22 Ultimate Team: Raiders Theme Team"
+**Preprocessed title**: "madden 22 ultimate team raider theme team"
+Here's how each part is handled:
+**"Madden"**: Remains unchanged as it’s a proper noun (name of the game series).
+**"22"**: Numbers are usually retained since they are not stopwords and carry specific information (here, indicating the version of the game).
+**"Ultimate"**: An adjective that is not a stopword and is kept.
+**"Team"**: Also kept as it is relevant to the context.
+**"Raiders"**: Might be lemmatized to "raider" depending on the model's vocabulary and training, though it’s a proper noun.
+**"Theme"**: Kept as it’s significant in this context.
+**"Team"**: Repeated and retained for the same reasons as the first instance.
+Stopwords (common words like "the", "is", "at", which do not appear here) would be removed, and punctuation like colons would be omitted. The result emphasizes key words that provide the most thematic insight, suitable for clustering or further NLP tasks.
+:white_tick:
+1
+
+
+Michael Fink
+  4 hours ago
+@Vitalii Pavlov
+ and please run the whole process with
+estimated number of clusters based on hierarchical approach
+estimated number of clusters based on silhouette
+clustering via hierarchical approach
+clustering via bunka
+for the attached, cleaned Indo titles only in column B as well. No preprocessing necessary for this one, as this AI based approach is basically preprocessing on steroids.
+List: https://docs.google.com/spreadsheets/d/1m017kKdkJgZPjnd6niTipQ76g2QlUuoouAr6lDzElVc/edit?usp=sharing
+

@@ -1,0 +1,31 @@
+Indo_A_multilingual-e5-large-instruct+AgglomerativeClustering+Silhoette_2.xlsx + Indo_A_multilingual-e5-large-instruct+AgglomerativeClustering+Silhoette_Bunka_2.xlsx
+Silhouette -> it's exactly the same as last time?! Did you run it several times and compiled the best performance out of these runs? There must be different Silhouette values for hierarchical clustering vs Bunka Topics/kmeans?
+Are you sure the Silhouette data/settings are correct, as the values are extremely low, see
+High Average Score (e.g., 0.7 to 1.0): This is an excellent range and suggests strong clustering structure.
+Moderate Average Score (e.g., 0.5 to 0.7): This range is also quite acceptable and indicates a reasonable structure, though not as distinct as higher scores.
+Low Average Score (e.g., 0.25 to 0.5): This range suggests a weak structure, with potentially considerable overlap between clusters.
+Very Low or Negative Score (less than 0.25): Scores in this range often indicate inappropriate clustering, either due to poor choice of parameters inadequate number of clusters
+no preprocessing?
+-> basically 1:1 the data we've discussed yesterday (and that didn't make any sense)?
+Indo_B_multilingual-e5-large-instruct+AgglomerativeClustering+Silhoette_2.xlsx
+-> same issues as above
+Please never run the clustering for obviously senseless clusters like 2, as this provides no benefit whatsoever. Can't validate preprocessing when looking at 2 clusters, same goes for Hierarchical vs. BunkaTopics.
+Let's focus on estimating the right clusters first, no need to always output the clusters. Therefore:
+please review various hierarchical clustering settings, like
+Single Linkage: Distance between the closest members of two clusters.
+Complete Linkage: Distance between the farthest members.
+Average Linkage: Average distance between all members of two clusters.
+Ward’s Method: Minimizes the variance within each cluster.
+-> are we using the best practice settings?
+same goes for silhouette
+Euclidean Distance: Often used for continuous numerical data.
+Cosine Similarity: Preferred for text data or any high-dimensional data, as it measures cosine of the angle between vectors (like TF-IDF vectors of text).
+Manhattan Distance: Useful in city-block scenarios where the path from one point to another is not direct.
+as well as k from 10-100
+not only based on hierarchical clustering, but also BunkaTopics and/or k-means
+-> we need to get to relevant scores, see above
+-> if it's not working out, we might want to tap into GAP etc.
+for:
+version 1: Indo 1 (preprocessed, my G Sheet data) -> then use E5 -> then estimation of clusters
+version 2: Indo 2 -> preprocess via SpaCy (and please provide some examples) -> then use E5 -> then estimation of clusters
+version 3: Outsider 1 -> preprocess via SpaCy (and please provide some examples) -> then use E5 -> then estimation of clusters

@@ -40,7 +40,7 @@ def agglomerative_clustering(X, payloads, n_clusters, collection_name):
     clusterer = AgglomerativeClustering(n_clusters=n_clusters)
     cluster_labels = clusterer.fit_predict(X=X)
 
-    writer = pd.ExcelWriter(f'result/{collection_name}_multilang E5 large instruct+AgglomerativeClustering+Silhoette_{n_clusters}.xlsx', engine='openpyxl')
+    writer = pd.ExcelWriter(f'result/{collection_name}+AgglomerativeClustering+Silhouette_{n_clusters}.xlsx', engine='openpyxl')
     for cluster_idx in np.arange(min(cluster_labels), max(cluster_labels)+1):
         data = []
         for idx, label in enumerate(cluster_labels):
@@ -60,7 +60,7 @@ def bunka_clustering(X, payloads, n_clusters, collection_name):
     bunka.fit(docs=payloads, ids = ids, pre_computed_embeddings = pre_computed_embeddings)
     bunka.get_topics(n_clusters=n_clusters, name_length=4)
 
-    writer = pd.ExcelWriter(f'result/{collection_name}_multilang E5 large instruct+AgglomerativeClustering+Silhoette_Bunka_{n_clusters}.xlsx', engine='openpyxl')
+    writer = pd.ExcelWriter(f'result/{collection_name}+AgglomerativeClustering+Silhouette_Bunka_{n_clusters}.xlsx', engine='openpyxl')
     for index, row in bunka.df_topics_.iterrows():
         # print(f"Index: {index}, topic_id: {row['topic_id']}, topic_name: {row['topic_name']}, size: {row['size']}, percent: {row['percent']}")
 
@@ -72,6 +72,11 @@ def bunka_clustering(X, payloads, n_clusters, collection_name):
         df = pd.DataFrame(data)
         df.to_excel(writer, sheet_name=f"{index}_{row['topic_name']}")
     writer.close()
+
+
+def process(agglomerative_metric = "euclidean", agglomerative_linkage = "ward", silhouette_metric = "euclidean"):
+    
+    return
 
 
 
@@ -87,7 +92,8 @@ if __name__ == "__main__":
     )
 
     # collection_names = ["DE indo_multilingual-e5-large-instruct", "DE rf_multilingual-e5-large-instruct", "DE et_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
-    collection_names = ["DE indo_multilingual-e5-large-instruct"]
+    # collection_names = ["DE indo_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
+    collection_names = ["Indo_A_multilingual-e5-large-instruct", "Indo_B_multilingual-e5-large-instruct"]
     for collection_name in collection_names:
         print(f"----- collection name = {collection_name} -----")
         records = fetch_all_vectors(qdrant_client, collection_name)
@@ -104,14 +110,14 @@ if __name__ == "__main__":
 
         # print(model.labels_, max(model.labels_))
         
-        range_n_clusters = np.arange(2, 81)
+        range_n_clusters = np.arange(10, 101)
         silhouette_coefficients=[]
 
         for n_clusters in range_n_clusters:
-            clusterer = AgglomerativeClustering(n_clusters=n_clusters)
+            clusterer = AgglomerativeClustering(n_clusters=n_clusters, metric="euclidean", linkage="ward")
             cluster_labels = clusterer.fit_predict(vectors)
 
-            silhouette_avg = silhouette_score(vectors, cluster_labels)
+            silhouette_avg = silhouette_score(vectors, cluster_labels, metric="euclidean")
             silhouette_coefficients.append(silhouette_avg)
             print("For n_clusters =", n_clusters, "The average silhouette_score is :", silhouette_avg)
 

@@ -1,0 +1,24 @@
+thanks so much for the input!
+clustering based on BunkaTopics/ kmeans?
+did we get any unclustered items?
+I would love to see silhouette and gap results (=estimation of number of clusters) for the 4 topics as well, similar to https://towardsdatascience.com/how-many-clusters-6b3f220f0ef5
+we should check if a better (open source or low cost) embedding tech - like mixedbread.ai , Cohere or Mistral - could significantly enhance the results
+
+
+
+Michael Fink  [3:31 PM]
+Hi Vitalii,
+thanks for the feedback, much appreciated!
+0 ) yes, we should only get clustered items as output, no unclustered ones
+a) let's focus on 2 websites, 1x in German and the other one in EN. No need to run tests for all 4 sites at this stage
+b) embedding tech: based on https://medium.com/@lars.chr.wiik/best-embedding-model-openai-cohere-google-e5-bge-931bfa1962dc as well as the huggingface ranking, we should be good with the multilang E5 large instruct -> let's use/stiwck with this one. Preprocessing like spaCy/nltk needed before vectorization? -> 2h?
+c) hierarchical clustering -> any settings to optimize the current output, like here https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html#sklearn.cluster.AgglomerativeClustering? -> 1-2h?
+-> to clarify, the final categorization tech definitely needs to be server-based
+d) using Silhoette approach to determine the number of clusters for the 2 websites -> 1h?
+e) re-run BunkaTopics with the numbers from Silhouette for the 2 websites. Can we get this time the AI generated category labels as well, like in the example "Business Development"? https://github.com/charlesdedampierre/BunkaTopics  -> 2h?
+-> we should keep it simple, when do you think can deliver an update? (edited)
+
+
+multilang E5 large instruct+AgglomerativeClustering+Silhoette
+multilang E5 large instruct+BunkaTopics+Silhoette
+

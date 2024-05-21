@@ -21,7 +21,8 @@ if __name__ == "__main__":
     )
 
     # collection_names = ["DE indo_multilingual-e5-large-instruct", "DE rf_multilingual-e5-large-instruct", "DE et_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
-    collection_names = ["EN outsider_multilingual-e5-large-instruct"]
+    # collection_names = ["EN outsider_multilingual-e5-large-instruct"]
+    collection_names = ["B2_multilingual-e5-large-instruct"]
     for collection_name in collection_names:
         records = fetch_all_vectors(qdrant_client, collection_name)
         vectors, payloads = extracting(records)
@@ -30,10 +31,11 @@ if __name__ == "__main__":
         # linkage = shc.linkage(vectors, method='complete', metric='euclidean')
         dendro = shc.dendrogram(linkage)
 
-        # mtp.title("Dendrogram Plot")
-        # mtp.xlabel("Embeddings")
-        # mtp.ylabel("Euclidean Distances")
-        # mtp.show()
+        mtp.title("Dendrogram Plot")
+        mtp.xlabel("Embeddings")
+        mtp.ylabel("Euclidean Distances")
+        mtp.show()
+
         distances = linkage[:, 2]
         distances = distances[::-1]
         max_distance = max(distances)
