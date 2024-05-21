@@ -20,8 +20,8 @@ if __name__ == "__main__":
         timeout=1000,
     )
 
-    collection_names = ["DE indo", "DE rf", "DE et", "EN outsider"]
-    # collection_names = ["EN outsider"]
+    # collection_names = ["DE indo_multilingual-e5-large-instruct", "DE rf_multilingual-e5-large-instruct", "DE et_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
+    collection_names = ["EN outsider_multilingual-e5-large-instruct"]
     for collection_name in collection_names:
         records = fetch_all_vectors(qdrant_client, collection_name)
         vectors, payloads = extracting(records)

@@ -14,7 +14,8 @@ qdrant_url=config["QDRANT_URL"]
 qdrant_api_key=config["QDRANT_API_KEY"]
 
 # embeddings = OpenAIEmbeddings()
-embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-base")
+# embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-base")
+embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-large-instruct")
 
 
 def processExcel(file_path):
@@ -28,7 +29,7 @@ def processExcel(file_path):
     for sheet_name in sheet_names:
         df = pd.read_excel(file_path, sheet_name=sheet_name)
         docs = df.iloc[:, 0].tolist()
-        doc_store = Qdrant.from_texts(texts=docs, embedding=embeddings, url=qdrant_url, api_key=qdrant_api_key, collection_name=sheet_name, timeout=1000)
+        doc_store = Qdrant.from_texts(texts=docs, embedding=embeddings, url=qdrant_url, api_key=qdrant_api_key, collection_name=sheet_name+"_multilingual-e5-large-instruct", timeout=1000)
         print(doc_store)
         
 
