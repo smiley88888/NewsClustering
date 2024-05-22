@@ -1,0 +1,5 @@
+Hi 
+@Vitalii Pavlov
+ we have a local version of Qdrant and we want to move it to cloud https://qdrant.tech/pricing/
+Do you want to take care of it?
+Do you have Python experience to make datapoints to work via API with external vDB

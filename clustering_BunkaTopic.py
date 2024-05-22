@@ -46,10 +46,13 @@ def process(vectors, payloads, silhouette_metric="euclidean", prefix=""):
         
         cluster_labels=[]
         for doc in bunka.docs:
-            for index, topic in enumerate(bunka.topics):
-                if doc.topic_id == topic.topic_id:
-                    cluster_labels.append(index)
-                    break
+            # for index, topic in enumerate(bunka.topics):
+            #     if doc.topic_id == topic.topic_id:
+            #         cluster_labels.append(index)
+            #         break
+            label = doc.topic_id.replace("bt-", "")
+            label = int(label)
+            cluster_labels.append(label)
         cluster_labels=np.array(cluster_labels)
         silhouette_avg = silhouette_score(vectors, cluster_labels, metric=silhouette_metric)
         silhouette_coefficients.append(silhouette_avg)
@@ -62,7 +65,7 @@ def process(vectors, payloads, silhouette_metric="euclidean", prefix=""):
     mtp.legend()
     mtp.grid(True)
     # mtp.show()
-    mtp.savefig(f'result/{prefix}_bunka_{silhouette_metric}.png', dpi=1000)
+    mtp.savefig(f'result/{prefix}_bunka_{silhouette_metric}.png', dpi=300)
     mtp.close()
 
     optimal_clusters = range_n_clusters[np.argmax(silhouette_coefficients)]
@@ -87,14 +90,16 @@ if __name__ == "__main__":
 
     # collection_names = ["DE indo_multilingual-e5-large-instruct", "DE rf_multilingual-e5-large-instruct", "DE et_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
     # collection_names = ["DE indo_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
-    collection_names = ["EN outsider_multilingual-e5-large-instruct"]
     # collection_names = ["Indo_A_multilingual-e5-large-instruct", "Indo_B_multilingual-e5-large-instruct"]
+    # collection_names = ["EN outsider_multilingual-e5-large-instruct", "EN outsider_pre_multilingual-e5-large-instruct", "DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
+    collection_names = ["EN outsider_multilingual-e5-large-instruct", "EN outsider_pre_multilingual-e5-large-instruct", "DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
     for collection_name in collection_names:
         print(f"----- collection name = {collection_name} -----")
         records = fetch_all_vectors(qdrant_client, collection_name)
         vectors, payloads = extracting(records)
 
-        for silhouette_metric in metrics:
-            process(vectors, payloads, silhouette_metric=silhouette_metric, prefix=collection_name)
+        # for silhouette_metric in metrics:
+        #     process(vectors, payloads, silhouette_metric=silhouette_metric, prefix=collection_name)
+        process(vectors, payloads, silhouette_metric='cosine', prefix=collection_name)
 
 

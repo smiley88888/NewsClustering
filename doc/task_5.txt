@@ -29,3 +29,46 @@ for:
 version 1: Indo 1 (preprocessed, my G Sheet data) -> then use E5 -> then estimation of clusters
 version 2: Indo 2 -> preprocess via SpaCy (and please provide some examples) -> then use E5 -> then estimation of clusters
 version 3: Outsider 1 -> preprocess via SpaCy (and please provide some examples) -> then use E5 -> then estimation of clusters
+
+Got it, let's get the final part done! :rocket:
+hierarchical clustering: could you use cosine for the distance with average linkage (instead of Ward +euclidean, I guess? Or what exactly did you use?)
+silhouette: could you check cosine for k 10-100?
+based on hierarchical as well as Bunka
+for all the 3 files, meaning Indo 1 AI preprocessed, Indo 2 as well as Outsider 1 -> let's skip spaCy for now, as combined with E5 the difference shouldn't be substantial (maybe 10%?) and we already have the AI preprocessed Indo1 version. But yes, I'd use en_core_web_lg and de_core_news_lg, but only for stop words, digits can kill relevant information (think fifa23), quotes, spaces, brackets, currency, skip punctuation, maybe add token.lemma_.lower -> we can fine-tune as soon as we have the foundation mapped out
+
+
+Hi, @Michael Fink 
+This is the result.
+
+1. I tested the cosine distance and average linkage for hierarchical clustering and cosine for silhouette.(See the following figures)
+Filename is structed as below:
+"sitename"_"embedding method"_"clustering method"+"distance metric"+"linkage"_"silhouette".png
+For example, in EN outsider_multilingual-e5-large-instruct_hierarchical+euclidean+ward_euclidean.png, sitename is "EN outsider", "multilingual-e5-large-instruct" is embedding method, hierarchical is clustering method, euclidean is metric, ward is linkage, euclidean is silhouette.
+"EN outsider_pre" means that preprocessed data.
+cosine distance+average linkage+cosine silhouette(1.1-folder)
+As you can see, it is not good.
+euclidean distance+ward linkage+euclidean silhouette(1.2-folder)
+It is not good.
+varing distance metric, linkage, and silhouette.(1.3-folder)
+It is not good.
+2. bunka clustering with silhouette(See the following figures)
+ euclidean silhouette(2.1-folder)
+It is good.
+cosine silhouette(2.2-folder)
+It is good too.
+
+In my opinions, Bunka takes a long time to find the optimal number of clusters. I think that range of k is large and k of 10-80 is good.
+I think that Silhouette score used is correct. For structured data(test data), it is meaningful value.
+
+3. For preprocessing, send the examples.
+For preprocessing, I used 'en_core_web_lg' model for EN and 'de_core_news_lg' model for DE.
+"Tambora Vulkanausbruch 1815: Ein Jahr ohne Sommer - Indojunkie" -> 'Tambora Vulkanausbruch 1815 Sommer Indojunkie'
+"Coconut-Talk: Bali Serie - Traditionelles Familienleben mit Katha aus Bali - Indojunkie" -> 'Coconut-Talk Bali Serie Traditionelles Familienleben Katha Bali Indojunkie'
+"Echte Homestays auf Bali mit HSH Stay finden - Indojunkie" -> 'echt Homestays Bali HSH Stay finden Indojunkie']
+
+"9 Games to Play While You Wait for Assassin’s Creed Mirage" -> '9 Games play wait Assassin Creed Mirage'
+"9 Ways to Get the Most Out of Your Xbox Gift Card" -> '9 way Xbox Gift card'
+"A Comprehensive Guide on How to Add Friends on Roblox Xbox One" -> 'Comprehensive Guide add Friends Roblox Xbox'
+
+I worked 3 hours to code, but it took a long time to calculate for various settings. This is the brute-force method to find the optimal number of clusters, so it took all day.
+I want to add 6 hours working time today.

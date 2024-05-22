@@ -1,6 +1,7 @@
 myenv
 __pycache__
 result
+report
 
 .env.local
 git_repos.bat
