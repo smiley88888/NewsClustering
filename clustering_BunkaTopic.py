@@ -8,6 +8,7 @@ import matplotlib.pyplot as mtp
 
 from bunkatopics import Bunka
 from sklearn.metrics import silhouette_samples, silhouette_score
+from sklearn.preprocessing import normalize
 
 
 def bunka_clustering(X, payloads, n_clusters, prefix):
@@ -92,14 +93,16 @@ if __name__ == "__main__":
     # collection_names = ["DE indo_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
     # collection_names = ["Indo_A_multilingual-e5-large-instruct", "Indo_B_multilingual-e5-large-instruct"]
     # collection_names = ["EN outsider_multilingual-e5-large-instruct", "EN outsider_pre_multilingual-e5-large-instruct", "DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
-    collection_names = ["EN outsider_multilingual-e5-large-instruct", "EN outsider_pre_multilingual-e5-large-instruct", "DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
+    collection_names = ["DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
     for collection_name in collection_names:
         print(f"----- collection name = {collection_name} -----")
         records = fetch_all_vectors(qdrant_client, collection_name)
         vectors, payloads = extracting(records)
+        normalized_vectors = normalize(vectors)
 
         # for silhouette_metric in metrics:
         #     process(vectors, payloads, silhouette_metric=silhouette_metric, prefix=collection_name)
-        process(vectors, payloads, silhouette_metric='cosine', prefix=collection_name)
+
+        process(normalized_vectors, payloads, silhouette_metric='cosine', prefix=collection_name)
 
 

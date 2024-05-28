@@ -1,5 +1,10 @@
 Hi 
 @Vitalii Pavlov
- we have a local version of Qdrant and we want to move it to cloud https://qdrant.tech/pricing/
-Do you want to take care of it?
-Do you have Python experience to make datapoints to work via API with external vDB
+ Vitalii,
+thanks for sharing, massive field study!
+did you normalize the embeddings to unit length, eg with NumPy, for the cosine approach, as mentioned? Otherwise the cosine results would be basically useless, as cosine focuses purely on the angle between vectors...
+preprocessing looks good
+when you think about the time, how long would it take to run the category estimation of a site with 1k titles, 10k titles and 100k titles, just ballpark? Bunka should be way faster than hierarchical?
+and, from your experience, how would hierarchical or Bunka/kmeans deal with adding new topics on an ongoing basis?
+-> would be great to get a better understanding for providing some feedback
+

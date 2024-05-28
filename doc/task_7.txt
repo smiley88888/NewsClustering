@@ -1,0 +1,20 @@
+[Task] Priority is below than clusterisation task from Michael.
+To copy our vDB installation to cloud, have all same settings for embedding and dimensions and structure. (no data need to be copied or sincronized, we will do it with API), and create all API data points we have now (insert/remove/search)
+details inside. (edited) 
+
+
+1. to recreate same structure/indexes on cloud vDB.
+We of course will be happy to hear if anything can be adjusted. (dimensions/embeding methods etc)
+
+
+2. To create API endpoints, so I can use this vDB from MW php scripts. We already have satisfying data points like ~/VectorDB/insert.py, and there not many of them. maybe 3-4
+but all these scripts need to be recreated in some other folder to access cloud vDB
+
+
+Current vDB and API endpoints should stay intact. As we use it, and will switch to cloud vDB when it's ready.
+
+
+The only change we need right now, is to add new variable to vector --> website.
+right now we have id,lang,user_id.
+you can check variables in existing vDB installation and in our current API scripts
+

@@ -10,7 +10,7 @@ from sklearn.cluster import AgglomerativeClustering
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.metrics import silhouette_samples, silhouette_score
 # from bunkatopics import Bunka
-
+from sklearn.preprocessing import normalize
 
 
 def plot_dendrogram(model, **kwargs):
@@ -36,8 +36,8 @@ def plot_dendrogram(model, **kwargs):
     dendrogram(linkage_matrix, **kwargs)
 
 
-def agglomerative_clustering(X, payloads, n_clusters, prefix):
-    clusterer = AgglomerativeClustering(n_clusters=n_clusters)
+def agglomerative_clustering(X, payloads, n_clusters, prefix, agglomerative_metric="euclidean", agglomerative_linkage="ward" ):
+    clusterer = AgglomerativeClustering(n_clusters=n_clusters, metric=agglomerative_metric, linkage=agglomerative_linkage)
     cluster_labels = clusterer.fit_predict(X=X)
 
     writer = pd.ExcelWriter(f'result/{prefix}_{n_clusters}.xlsx', engine='openpyxl')
@@ -76,7 +76,7 @@ def process(vectors, payloads, agglomerative_metric="euclidean", agglomerative_l
     optimal_clusters = range_n_clusters[np.argmax(silhouette_coefficients)]
     print("optimal_clusters=", optimal_clusters)
 
-    agglomerative_clustering(vectors, payloads, optimal_clusters, f'{prefix}_hierarchical+{agglomerative_metric}+{agglomerative_linkage}_{silhouette_metric}')
+    agglomerative_clustering(vectors, payloads, optimal_clusters, f'{prefix}_hierarchical+{agglomerative_metric}+{agglomerative_linkage}_{silhouette_metric}', agglomerative_metric=agglomerative_metric, agglomerative_linkage=agglomerative_linkage)
 
 
 
@@ -96,12 +96,13 @@ if __name__ == "__main__":
     # collection_names = ["DE indo_multilingual-e5-large-instruct", "DE rf_multilingual-e5-large-instruct", "DE et_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
     # collection_names = ["DE indo_multilingual-e5-large-instruct", "EN outsider_multilingual-e5-large-instruct"]
     # collection_names = ["EN outsider_multilingual-e5-large-instruct", "EN outsider_pre_multilingual-e5-large-instruct", "DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
-    collection_names = ["EN outsider_pre_multilingual-e5-large-instruct", "DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
+    collection_names = ["EN outsider_multilingual-e5-large-instruct", "EN outsider_pre_multilingual-e5-large-instruct", "DE indo_multilingual-e5-large-instruct", "DE indo_pre_multilingual-e5-large-instruct"]
     # collection_names = ["Indo_A_multilingual-e5-large-instruct", "Indo_B_multilingual-e5-large-instruct"]
     for collection_name in collection_names:
         print(f"----- collection name = {collection_name} -----")
         records = fetch_all_vectors(qdrant_client, collection_name)
         vectors, payloads = extracting(records)
+        normalized_vectors = normalize(vectors)
 
         # for agglomerative_metric in metrics:
         #     for agglomerative_linkage in linkages:
@@ -110,7 +111,8 @@ if __name__ == "__main__":
         #         for silhouette_metric in metrics:
         #             process(vectors, payloads, agglomerative_metric=agglomerative_metric, agglomerative_linkage=agglomerative_linkage, silhouette_metric=silhouette_metric, prefix=collection_name)
 
-        process(vectors, payloads, agglomerative_metric='cosine', agglomerative_linkage='average', silhouette_metric='cosine', prefix=collection_name)
-        process(vectors, payloads, agglomerative_metric='euclidean', agglomerative_linkage='ward', silhouette_metric='euclidean', prefix=collection_name)
+        # process(vectors, payloads, agglomerative_metric='euclidean', agglomerative_linkage='ward', silhouette_metric='euclidean', prefix=collection_name)
+
+        process(normalized_vectors, payloads, agglomerative_metric='cosine', agglomerative_linkage='average', silhouette_metric='cosine', prefix=collection_name)
 
 
