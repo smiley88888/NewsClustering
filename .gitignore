@@ -10,3 +10,10 @@ git_repos.bat
 data/~$Data for clustering (EverGrowing).xlsx
 test.py
 
+VectorDB.zip
+VectorDB/
+data/Invoice_20240604.pdf
+data/ever-growing.pem
+data/ever-growing.ppk
+doc/creditial.txt
+doc/old.pub

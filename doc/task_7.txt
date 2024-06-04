@@ -18,3 +18,29 @@ The only change we need right now, is to add new variable to vector --> website.
 right now we have id,lang,user_id.
 you can check variables in existing vDB installation and in our current API scripts
 
+
+1. Log in 'qdrant.tech' site.
+2. Go to the 'Clusters' in Dashboard, create Cluster. If you have one, no need to create.
+3. Go the the 'Data Access Control' in Dashboard, get the API keys to access to your Cloud Clusters.
+At this, you select the 'Code Snippet' to python and you must copy the API keys and Cluster URL.
+'''
+qdrant_client = QdrantClient(
+    url="https://71e3608e-f077-4f6f-bcfa-4e07e54fc2b7.europe-west3-0.gcp.cloud.qdrant.io:6333", 
+    api_key="B8WHajDlDyW3CsfhuLLQtXKQlWWCiv6DhFv_fPTmB23x4C_lGsHqCw",
+)
+'''
+4. Again go to the 'Clusters', and go to the Cluster's Dashboard.
+Actions->Dashboard.
+from qdrant_client import QdrantClient
+Set your API key.
+5. In this dashboard, you control collections with UI.
+6. Python Code.
+In local VectorDB, you used QdrantClient with host and port.
+In cloud VectorDB, use url and api_key instead of host and port.
+e.g.
+	- local
+	client = QdrantClient(host="localhost", port=6333)
+	- cloud
+	qdrant_client = QdrantClient(url="https://71e3608e-f077-4f6f-bcfa-4e07e54fc2b7.europe-west3-0.gcp.cloud.qdrant.io:6333", api_key="B8WHajDlDyW3CsfhuLLQtXKQlWWCiv6DhFv_fPTmB23x4C_lGsHqCw")
+The others are the same as the local VDB.
+
